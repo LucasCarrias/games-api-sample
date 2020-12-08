@@ -13,7 +13,6 @@ class GameTests(APITestCase):
                     datetime.now() + timedelta(hours=1),
                     timezone.get_current_timezone()
                 )
-        print(gamedatetime)
         data = {
             'name': 'TestGame',
             'release_date': gamedatetime,
@@ -94,7 +93,7 @@ class GameTests(APITestCase):
             'played':False
         }
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
     def test_should_not_update_with_duplicated_name(self):
         self.set_up()
@@ -115,7 +114,7 @@ class GameTests(APITestCase):
         game_serializer = GameSerializer(game_test)
 
         response = self.client.put(url, game_serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
     def test_should_not_delete_released_games(self):
         gamedatetime = timezone.make_aware(
